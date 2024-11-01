@@ -13,8 +13,9 @@ It is deployed in front of an MQTT broker and can be used for authorization, pac
 git clone https://github.com/absmach/mproxy.git
 cd mproxy
 make
-./build/mproxy
+./build/mproxy -env="path-to-env"
 ```
+The `env` argument is optional and by default will search for a `.env` in the root directory
 
 ## Architecture
 
