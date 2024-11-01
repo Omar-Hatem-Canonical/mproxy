@@ -6,6 +6,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"flag"
 	"log/slog"
 	"os"
 	"os/signal"
@@ -37,22 +38,36 @@ const (
 )
 
 func main() {
+	
 	ctx, cancel := context.WithCancel(context.Background())
 	g, ctx := errgroup.WithContext(ctx)
-
+	
 	logHandler := slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
 		Level: slog.LevelDebug,
 	})
 	logger := slog.New(logHandler)
-
+	
 	handler := simple.New(logger)
-
+	
 	var interceptor session.Interceptor
+	
 
-	// Loading .env file to environment
-	err := godotenv.Load()
-	if err != nil {
-		panic(err)
+	pathPtr := flag.String("env", ".env", "The .env path")
+	flag.Parse()
+
+	if (*pathPtr == ".env") {
+		// Loading .env file to environment
+		err := godotenv.Load()
+		if err != nil {
+			panic(err)
+		}
+		
+		} else {
+		// Loading specified file to environment
+		err := godotenv.Load(*pathPtr)
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	// mProxy server Configuration for MQTT without TLS
