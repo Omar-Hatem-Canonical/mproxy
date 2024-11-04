@@ -6,6 +6,7 @@ package translator
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log/slog"
 
 	"github.com/absmach/mproxy/pkg/session"
@@ -18,11 +19,11 @@ var _ session.Handler = (*Translator)(nil)
 // Translator implements mqtt.Translator interface
 type Translator struct {
 	logger *slog.Logger
-	topics *map[string]string
+	topics map[string]string
 }
 
 // New creates new Event entity
-func New(logger *slog.Logger, topics *map[string]string) *Translator {
+func New(logger *slog.Logger, topics map[string]string) *Translator {
 	return &Translator{
 		logger: logger,
 		topics: topics,
@@ -38,12 +39,37 @@ func (tr *Translator) AuthConnect(ctx context.Context) error {
 // AuthPublish is called on device publish,
 // prior forwarding to the MQTT broker
 func (tr *Translator) AuthPublish(ctx context.Context, topic *string, payload *[]byte) error {
+
+	newTopic, ok := tr.topics[*topic]
+	if ok {
+		msg := fmt.Sprintf("Topic %s translated to Topic %s. Publishing...", *topic, newTopic)
+		*topic = newTopic
+		tr.logger.Info(msg)
+	} else {
+		msg := fmt.Sprintf("Topic %s could not be translated and thus kept the same. Publishing...", *topic)
+		tr.logger.Info(msg)
+	}
+	
+	
+	
 	return tr.logAction(ctx, "AuthPublish", &[]string{*topic}, payload)
 }
 
 // AuthSubscribe is called on device publish,
 // prior forwarding to the MQTT broker
 func (tr *Translator) AuthSubscribe(ctx context.Context, topics *[]string) error {
+	for i, topic := range *topics {
+		newTopic, ok := tr.topics[topic]
+		if ok {
+			msg := fmt.Sprintf("Topic %s translated to Topic %s. Subscribing...", (*topics)[i], newTopic)
+			(*topics)[i] = newTopic
+			tr.logger.Info(msg)
+			} else {
+				msg := fmt.Sprintf("Topic %s could not be translated and thus kept the same. Subscribing...", (*topics)[i])
+				tr.logger.Info(msg)
+		}
+	}
+
 	return tr.logAction(ctx, "AuthSubscribe", topics, nil)
 }
 
