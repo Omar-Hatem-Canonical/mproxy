@@ -5,15 +5,19 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"flag"
+	"fmt"
 	"log/slog"
 	"os"
 	"os/signal"
+	// "strings"
 	"syscall"
 
+	"github.com/absmach/mproxy/examples/translator"
+
+
 	"github.com/absmach/mproxy"
-	"github.com/absmach/mproxy/examples/simple"
+	// "github.com/absmach/mproxy/examples/simple"
 	"github.com/absmach/mproxy/pkg/http"
 	"github.com/absmach/mproxy/pkg/mqtt"
 	"github.com/absmach/mproxy/pkg/mqtt/websocket"
@@ -47,7 +51,12 @@ func main() {
 	})
 	logger := slog.New(logHandler)
 	
-	handler := simple.New(logger)
+	topicTranslation := make(map[string]string)
+
+	topicTranslation["test/topic"] = "test/topic2"
+
+	// handler := simple.New(logger)
+	handler := translator.New(logger, topicTranslation)
 	
 	var interceptor session.Interceptor
 	
