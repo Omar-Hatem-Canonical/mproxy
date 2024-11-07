@@ -13,12 +13,12 @@ import (
 	// "strings"
 	"syscall"
 
-	// "github.com/absmach/mproxy/examples/translator"
+	"github.com/absmach/mproxy/examples/translator"
 	"github.com/absmach/mproxy/examples/injector"
 
 
 	"github.com/absmach/mproxy"
-	// "github.com/absmach/mproxy/examples/simple"
+	"github.com/absmach/mproxy/examples/simple"
 	"github.com/absmach/mproxy/pkg/http"
 	"github.com/absmach/mproxy/pkg/mqtt"
 	"github.com/absmach/mproxy/pkg/mqtt/websocket"
@@ -56,29 +56,38 @@ func main() {
 
 	topicTranslation["test/topic"] = "test/topic2"
 
-	// handler := simple.New(logger)
-	// handler := translator.New(logger, topicTranslation)
-	handler := injector.New(logger, "Hello")
+	handlerType := flag.Int("h", 0, "selects the handler that inspects the packets")
+
 	
 	var interceptor session.Interceptor
 	
-
-	pathPtr := flag.String("env", ".env", "The .env path")
+	
+	pathPtr := flag.String("env", "", "The .env path")
 	flag.Parse()
+	
+	var handler session.Handler
 
-	if (*pathPtr == ".env") {
+	switch *handlerType {
+		case 0: handler = simple.New(logger)
+		case 1: handler = translator.New(logger, topicTranslation)
+		case 2: handler = injector.New(logger, "Hello")
+		default: simple.New(logger)
+	}
+	
+	
+	if (*pathPtr == "") {
 		// Loading .env file to environment
-		err := godotenv.Load()
+		err := godotenv.Load("/snap/mqproxy/current/.env")
 		if err != nil {
 			panic(err)
 		}
 		
 		} else {
-		// Loading specified file to environment
-		err := godotenv.Load(*pathPtr)
-		if err != nil {
-			panic(err)
-		}
+			// Loading specified file to environment
+			err := godotenv.Load(*pathPtr)
+			if err != nil {
+				panic(err)
+			}
 	}
 
 	// mProxy server Configuration for MQTT without TLS
