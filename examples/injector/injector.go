@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"os"
 
 	"github.com/absmach/mproxy/pkg/session"
 )
@@ -40,12 +41,15 @@ func (inj *Injector) AuthConnect(ctx context.Context) error {
 // prior forwarding to the MQTT broker
 func (inj *Injector) AuthPublish(ctx context.Context, topic *string, payload *[]byte) error {
 
-	newPayloadAsString := string((*payload)) + inj.addedPayload
+	
+	
+	hostName, _ := os.Hostname()
+	addedInfo := fmt.Sprintf(", Device: %s", hostName)
+	newPayloadAsString := string((*payload)) + inj.addedPayload + addedInfo
 	newPayloadAsByteStream := []byte(newPayloadAsString)
 	*payload = newPayloadAsByteStream
 
-
-	msg := fmt.Sprintf("Payload now is %s ", string((*payload)))
+	msg := fmt.Sprintf("Payload now is %s", string((*payload)))
 	inj.logger.Info(msg)
 	
 	
