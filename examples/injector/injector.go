@@ -67,7 +67,6 @@ func (inj *Injector) Connect(ctx context.Context) error {
 
 // Publish - after client successfully published
 func (inj *Injector) Publish(ctx context.Context, topic *string, payload *[]byte) error {
-	inj.logger.Info(fmt.Sprintf("Payload is %s", string(*payload)))
 	return inj.logAction(ctx, "Publish", &[]string{*topic}, payload)
 }
 
