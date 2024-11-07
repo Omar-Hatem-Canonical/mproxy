@@ -13,7 +13,8 @@ import (
 	// "strings"
 	"syscall"
 
-	"github.com/absmach/mproxy/examples/translator"
+	// "github.com/absmach/mproxy/examples/translator"
+	"github.com/absmach/mproxy/examples/injector"
 
 
 	"github.com/absmach/mproxy"
@@ -56,7 +57,8 @@ func main() {
 	topicTranslation["test/topic"] = "test/topic2"
 
 	// handler := simple.New(logger)
-	handler := translator.New(logger, topicTranslation)
+	// handler := translator.New(logger, topicTranslation)
+	handler := injector.New(logger, "Hello")
 	
 	var interceptor session.Interceptor
 	

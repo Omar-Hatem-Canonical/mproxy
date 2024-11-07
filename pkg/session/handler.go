@@ -34,3 +34,4 @@ type Handler interface {
 	// Disconnect on connection with client lost
 	Disconnect(ctx context.Context) error
 }
+
