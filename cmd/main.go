@@ -56,7 +56,7 @@ func main() {
 
 	topicTranslation["test/topic"] = "test/topic2"
 
-	handlerType := flag.Int("h", 0, "selects the handler that inspects the packets")
+	handlerType := flag.Int("hand", 0, "selects the handler that inspects the packets")
 
 	
 	var interceptor session.Interceptor
