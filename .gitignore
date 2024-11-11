@@ -1,3 +1,5 @@
 build
 test/aedes/node_modules
-examples/
+examples/client
+examples/ocsp-crl-responder
+examples/server
