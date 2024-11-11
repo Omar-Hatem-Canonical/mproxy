@@ -76,7 +76,7 @@ func stream(ctx context.Context, dir Direction, r, w net.Conn, h Handler, ic Int
 		default:
 			if pkt.Type == packets.PUBLISH {
 				topics := []string{pkt.Content.(*packets.Publish).Topic}
-				if err = h.AuthSubscribe(ctx, &topics); err != nil {
+				if err = h.AuthSubscribe(ctx, &topics, &pkt.Content.(*packets.Publish).Properties.User); err != nil {
 					pkt = packets.NewControlPacket(packets.DISCONNECT)
 					if _, wErr := pkt.WriteTo(w); wErr != nil {
 						err = errors.Join(err, wErr)
@@ -87,7 +87,7 @@ func stream(ctx context.Context, dir Direction, r, w net.Conn, h Handler, ic Int
 		}
 
 		if ic != nil {
-			pkt, err = ic.Intercept(ctx, pkt, dir)
+			*pkt, err = ic.Intercept(ctx, pkt, dir)
 			if err != nil {
 				return wrap(ctx, err, dir)
 			}
@@ -128,9 +128,9 @@ func authorize(ctx context.Context, pkt *packets.ControlPacket, h Handler) error
 		pkt.Content.(*packets.Connect).Password = s.Password
 		return nil
 	case "PUBLISH":
-		return h.AuthPublish(ctx, &pkt.Content.(*packets.Publish).Topic, &pkt.Content.(*packets.Publish).Payload, pkt.Content.(*packets.Publish).Properties)
+		return h.AuthPublish(ctx, &pkt.Content.(*packets.Publish).Topic, &pkt.Content.(*packets.Publish).Payload, &pkt.Content.(*packets.Publish).Properties.User)
 	case "SUBSCRIBE":
-		return h.AuthSubscribe(ctx, &pkt.Content.(*packets.Subscribe).Subscriptions, pkt.Content.(*packets.Subscribe).Properties)
+		return h.AuthSubscribe(ctx, &pkt.Content.(*packets.Subscribe).Subscriptions, &pkt.Content.(*packets.Publish).Properties.User)
 	default:
 		return nil
 	}

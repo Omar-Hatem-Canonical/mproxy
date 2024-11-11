@@ -17,5 +17,5 @@ type Interceptor interface {
 	// Packets can be modified before being sent to the broker or the client.
 	// If the interceptor returns a non-nil packet, the modified packet is sent.
 	// The error indicates unsuccessful interception and mProxy is cancelling the packet.
-	Intercept(ctx context.Context, pkt packets.ControlPacket, dir Direction) (packets.ControlPacket, error)
+	Intercept(ctx context.Context, pkt *packets.ControlPacket, dir Direction) (packets.ControlPacket, error)
 }

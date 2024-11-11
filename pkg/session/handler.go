@@ -4,6 +4,7 @@
 package session
 
 import "context"
+import "github.com/eclipse/paho.golang/packets"
 
 // Handler is an interface for mProxy hooks.
 type Handler interface {
@@ -13,11 +14,11 @@ type Handler interface {
 
 	// Authorization on client `PUBLISH`
 	// Topic is passed by reference, so that it can be modified
-	AuthPublish(ctx context.Context, topic *string, payload *[]byte) error
+	AuthPublish(ctx context.Context, topic *string, payload *[]byte, userProperties *[]packets.User) error
 
 	// Authorization on client `SUBSCRIBE`
 	// Topics are passed by reference, so that they can be modified
-	AuthSubscribe(ctx context.Context, topics *[]string) error
+	AuthSubscribe(ctx context.Context, subscriptions *[]packets.SubOptions, userProperties *[]packets.User) error
 
 	// After client successfully connected
 	Connect(ctx context.Context) error
@@ -26,10 +27,10 @@ type Handler interface {
 	Publish(ctx context.Context, topic *string, payload *[]byte) error
 
 	// After client successfully subscribed
-	Subscribe(ctx context.Context, topics *[]string) error
+	Subscribe(ctx context.Context, subscriptions *[]packets.SubOptions) error
 
 	// After client unsubscribed
-	Unsubscribe(ctx context.Context, topics *[]string) error
+	Unsubscribe(ctx context.Context, subscriptions *[]packets.SubOptions) error
 
 	// Disconnect on connection with client lost
 	Disconnect(ctx context.Context) error
