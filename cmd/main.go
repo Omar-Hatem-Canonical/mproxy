@@ -15,6 +15,7 @@ import (
 
 	"github.com/absmach/mproxy/examples/translator"
 	"github.com/absmach/mproxy/examples/injector"
+	"github.com/absmach/mproxy/examples/hostTranslator"
 
 
 	"github.com/absmach/mproxy"
@@ -71,6 +72,7 @@ func main() {
 		case 0: handler = simple.New(logger)
 		case 1: handler = translator.New(logger, topicTranslation)
 		case 2: handler = injector.New(logger, "Hello")
+		case 3: handler = hostTranslator.New(logger)
 		default: simple.New(logger)
 	}
 	
