@@ -76,7 +76,7 @@ func stream(ctx context.Context, dir Direction, r, w net.Conn, h Handler, ic Int
 		default:
 			if pkt.Type == packets.PUBLISH {
 				topics := []string{pkt.Content.(*packets.Publish).Topic}
-				if err = h.AuthSubscribe(ctx, &topics, &pkt.Content.(*packets.Publish).Properties.User); err != nil {
+				if err = h.DownSubscribe(ctx, &topics, &pkt.Content.(*packets.Publish).Properties.User); err != nil {
 					pkt = packets.NewControlPacket(packets.DISCONNECT)
 					if _, wErr := pkt.WriteTo(w); wErr != nil {
 						err = errors.Join(err, wErr)
