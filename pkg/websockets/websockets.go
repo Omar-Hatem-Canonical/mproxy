@@ -104,6 +104,12 @@ func (p *Proxy) stream(ctx context.Context, topic string, src, dest *websocket.C
 			if err := p.event.Publish(ctx, &topic, &payload); err != nil {
 				return err
 			}
+		} else {
+			topics := []string{topic}
+			fmt.Println(topics)
+			if err := p.event.DownSubscribe(ctx, &topics); err != nil {
+				return err
+			}
 		}
 		if err := dest.WriteMessage(messageType, payload); err != nil {
 			return err

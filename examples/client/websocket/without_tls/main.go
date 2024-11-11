@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	// "flag"
 
 	"github.com/absmach/mproxy/examples/client/websocket"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
@@ -14,6 +15,10 @@ var (
 )
 
 func main() {
+	// sub := flag.Bool("s", false, "subscribe to topic")
+	// pub := flag.Bool("p", false, "publish to topic")
+
+	
 	// Replace these with your MQTT broker details
 	fmt.Printf("Subscribing to topic %s without TLS\n", topic)
 	subClient, err := websocket.Connect(brokerAddress, nil)
@@ -22,8 +27,10 @@ func main() {
 	}
 	defer subClient.Disconnect(250)
 
+	var token mqtt.Token
+
 	done := make(chan struct{}, 1)
-	if token := subClient.Subscribe(topic, 0, func(c mqtt.Client, m mqtt.Message) { onMessage(c, m, done) }); token.Wait() && token.Error() != nil {
+	if token = subClient.Subscribe(topic, 0, func(c mqtt.Client, m mqtt.Message) { onMessage(c, m, done) }); token.Wait() && token.Error() != nil {
 		panic(token.Error())
 	}
 
@@ -36,6 +43,11 @@ func main() {
 	defer pubClient.Disconnect(250)
 
 	pubClient.Publish(topic, 0, false, payload)
+
+	// for token.Wait() {
+	// 	fmt.Println("Waiting...")
+	// }
+
 	<-done
 
 	invalidPathBrokerAddress := brokerAddress + "/invalid_path"

@@ -45,6 +45,12 @@ func (h *Handler) AuthSubscribe(ctx context.Context, topics *[]string) error {
 	return h.logAction(ctx, "AuthSubscribe", topics, nil)
 }
 
+// Reconvert topics on client going down
+// Topics are passed by reference, so that they can be modified
+func (tr *Handler) DownSubscribe(ctx context.Context, topics *[]string) error {
+	return tr.logAction(ctx, "DownSubscribe", topics, nil)
+}
+
 // Connect - after client successfully connected
 func (h *Handler) Connect(ctx context.Context) error {
 	return h.logAction(ctx, "Connect", nil, nil)

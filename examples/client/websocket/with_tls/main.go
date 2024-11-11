@@ -47,28 +47,28 @@ func main() {
 	pubClient.Publish(topic, 0, false, payload)
 	<-done
 
-	invalidPathBrokerAddress := brokerAddress + "/invalid_path"
-	fmt.Printf("Publishing to topic %s with TLS, with ca certificate %s to invalid path %s \n", topic, serverCAFile, invalidPathBrokerAddress)
-	pubClientInvalidPath, err := websocket.Connect(invalidPathBrokerAddress, tlsCfg)
-	if err == nil {
-		pubClientInvalidPath.Disconnect(250)
-		panic("some thing went wrong")
-	}
-	fmt.Printf("Failed to connect with invalid path %s,error : %s\n", invalidPathBrokerAddress, err.Error())
+	// invalidPathBrokerAddress := brokerAddress + "/invalid_path"
+	// fmt.Printf("Publishing to topic %s with TLS, with ca certificate %s to invalid path %s \n", topic, serverCAFile, invalidPathBrokerAddress)
+	// pubClientInvalidPath, err := websocket.Connect(invalidPathBrokerAddress, tlsCfg)
+	// if err == nil {
+	// 	pubClientInvalidPath.Disconnect(250)
+	// 	panic("some thing went wrong")
+	// }
+	// fmt.Printf("Failed to connect with invalid path %s,error : %s\n", invalidPathBrokerAddress, err.Error())
 
-	serverCAFile = ""
-	fmt.Printf("Publishing to topic %s with TLS, without ca certificate %s  \n", topic, serverCAFile)
-	tlsCfg, err = websocket.LoadTLS(certFile, keyFile, serverCAFile, clientCAFile)
-	if err != nil {
-		panic(err)
-	}
+	// serverCAFile = ""
+	// fmt.Printf("Publishing to topic %s with TLS, without ca certificate %s  \n", topic, serverCAFile)
+	// tlsCfg, err = websocket.LoadTLS(certFile, keyFile, serverCAFile, clientCAFile)
+	// if err != nil {
+	// 	panic(err)
+	// }
 
-	pubClientNoCerts, err := websocket.Connect(brokerAddress, tlsCfg)
-	if err == nil {
-		pubClientNoCerts.Disconnect(250)
-		panic("some thing went wrong")
-	}
-	fmt.Printf("Failed to connect without Server certs,error : %s\n", err.Error())
+	// pubClientNoCerts, err := websocket.Connect(brokerAddress, tlsCfg)
+	// if err == nil {
+	// 	pubClientNoCerts.Disconnect(250)
+	// 	panic("some thing went wrong")
+	// }
+	// fmt.Printf("Failed to connect without Server certs,error : %s\n", err.Error())
 
 }
 

@@ -54,10 +54,16 @@ func (tr *hostTranslator) AuthPublish(ctx context.Context, topic *string, payloa
 	return tr.logAction(ctx, "AuthPublish", &[]string{*topic}, payload)
 }
 
+// Reconvert topics on client going down
+// Topics are passed by reference, so that they can be modified
+func (tr *hostTranslator) DownSubscribe(ctx context.Context, topics *[]string) error {
+	return tr.logAction(ctx, "DownSubscribe", topics, nil)
+}
+
 // AuthSubscribe is called on device publish,
 // prior forwarding to the MQTT broker
 func (tr *hostTranslator) AuthSubscribe(ctx context.Context, topics *[]string) error {
-	for i, _ := range *topics {
+	for i := range *topics {
 		hostName, err := os.Hostname()
 		if err == nil {
 			msg := fmt.Sprintf("Topic %s is in device %s, Adding namespace and subscribing...", (*topics)[i], hostName)

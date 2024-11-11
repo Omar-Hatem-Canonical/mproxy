@@ -20,13 +20,15 @@ var _ session.Handler = (*Translator)(nil)
 type Translator struct {
 	logger *slog.Logger
 	topics map[string]string
+	revTopics map[string]string
 }
 
 // New creates new Event entity
-func New(logger *slog.Logger, topics map[string]string) *Translator {
+func New(logger *slog.Logger, topics, revTopics map[string]string) *Translator {
 	return &Translator{
 		logger: logger,
 		topics: topics,
+		revTopics: revTopics,
 	}
 }
 
@@ -71,6 +73,24 @@ func (tr *Translator) AuthSubscribe(ctx context.Context, topics *[]string) error
 	}
 
 	return tr.logAction(ctx, "AuthSubscribe", topics, nil)
+}
+
+// AuthSubscribe is called on device publish,
+// prior forwarding to the MQTT broker
+func (tr *Translator) DownSubscribe(ctx context.Context, topics *[]string) error {
+	for i, topic := range *topics {
+		newTopic, ok := tr.revTopics[topic]
+		if ok {
+			msg := fmt.Sprintf("Topic %s translated to Topic %s. Subscribing...", (*topics)[i], newTopic)
+			(*topics)[i] = newTopic
+			tr.logger.Info(msg)
+			} else {
+				msg := fmt.Sprintf("Topic %s could not be translated and thus kept the same. Subscribing...", (*topics)[i])
+				tr.logger.Info(msg)
+		}
+	}
+
+	return tr.logAction(ctx, "DownSubscribe", topics, nil)
 }
 
 // Connect - after client successfully connected

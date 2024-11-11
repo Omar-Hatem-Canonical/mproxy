@@ -45,7 +45,7 @@ func (inj *Injector) AuthPublish(ctx context.Context, topic *string, payload *[]
 	
 	hostName, _ := os.Hostname()
 	addedInfo := fmt.Sprintf(", Device: %s", hostName)
-	newPayloadAsString := string((*payload)) + inj.addedPayload + addedInfo
+	newPayloadAsString := string((*payload)) + " " + inj.addedPayload + addedInfo
 	newPayloadAsByteStream := []byte(newPayloadAsString)
 	*payload = newPayloadAsByteStream
 
@@ -63,6 +63,13 @@ func (inj *Injector) AuthSubscribe(ctx context.Context, topics *[]string) error 
 
 	return inj.logAction(ctx, "AuthSubscribe", topics, nil)
 }
+
+// Reconvert topics on client going down
+// Topics are passed by reference, so that they can be modified
+func (tr *Injector) DownSubscribe(ctx context.Context, topics *[]string) error {
+	return tr.logAction(ctx, "DownSubscribe", topics, nil)
+}
+
 
 // Connect - after client successfully connected
 func (inj *Injector) Connect(ctx context.Context) error {

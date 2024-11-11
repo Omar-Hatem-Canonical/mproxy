@@ -54,8 +54,10 @@ func main() {
 	logger := slog.New(logHandler)
 	
 	topicTranslation := make(map[string]string)
+	revTopicTranslation := make(map[string]string)
 
 	topicTranslation["test/topic"] = "test/foo"
+	revTopicTranslation["test/foo"] = "test/topic"
 
 	handlerType := flag.Int("hand", 0, "selects the handler that inspects the packets")
 
@@ -70,7 +72,7 @@ func main() {
 
 	switch *handlerType {
 		case 0: handler = simple.New(logger)
-		case 1: handler = translator.New(logger, topicTranslation)
+		case 1: handler = translator.New(logger, topicTranslation, revTopicTranslation)
 		case 2: handler = injector.New(logger, "Hello")
 		case 3: handler = hostTranslator.New(logger)
 		default: simple.New(logger)
@@ -79,7 +81,7 @@ func main() {
 	
 	if (*pathPtr == "") {
 		// Loading .env file to environment
-		err := godotenv.Load("/snap/mqproxy/current/.env")
+		err := godotenv.Load()
 		if err != nil {
 			panic(err)
 		}

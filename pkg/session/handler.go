@@ -19,6 +19,10 @@ type Handler interface {
 	// Topics are passed by reference, so that they can be modified
 	AuthSubscribe(ctx context.Context, topics *[]string) error
 
+	// Reconvert topics on client going down
+	// Topics are passed by reference, so that they can be modified
+	DownSubscribe(ctx context.Context, topics *[]string) error
+
 	// After client successfully connected
 	Connect(ctx context.Context) error
 

@@ -75,7 +75,7 @@ func stream(ctx context.Context, dir Direction, r, w net.Conn, h Handler, ic Int
 		default:
 			if p, ok := pkt.(*packets.PublishPacket); ok {
 				topics := []string{p.TopicName}
-				if err = h.AuthSubscribe(ctx, &topics); err != nil {
+				if err = h.DownSubscribe(ctx, &topics); err != nil {
 					pkt = packets.NewControlPacket(packets.Disconnect).(*packets.DisconnectPacket)
 					if wErr := pkt.Write(w); wErr != nil {
 						err = errors.Join(err, wErr)
@@ -103,6 +103,7 @@ func stream(ctx context.Context, dir Direction, r, w net.Conn, h Handler, ic Int
 				return wrap(ctx, err, dir)
 			}
 		}
+		
 	}
 }
 
