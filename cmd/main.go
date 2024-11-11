@@ -55,7 +55,7 @@ func main() {
 	
 	topicTranslation := make(map[string]string)
 
-	topicTranslation["test/topic"] = "test/topic2"
+	topicTranslation["test/topic"] = "test/foo"
 
 	handlerType := flag.Int("hand", 0, "selects the handler that inspects the packets")
 
