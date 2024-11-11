@@ -6,7 +6,9 @@ import (
 	"errors"
 	"os"
 
-	mqtt "github.com/eclipse/paho.mqtt.golang"
+	// mqtt "github.com/eclipse/paho.mqtt.golang"
+	mqtt "github.com/eclipse/paho.golang/paho"
+
 )
 
 var (

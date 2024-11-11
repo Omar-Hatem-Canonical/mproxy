@@ -7,7 +7,9 @@ import (
 	"fmt"
 	"time"
 
-	mqtt "github.com/eclipse/paho.mqtt.golang"
+	// mqtt "github.com/eclipse/paho.mqtt.golang"
+	mqtt "github.com/eclipse/paho.golang/paho"
+
 	"github.com/google/uuid"
 )
 
@@ -70,13 +72,19 @@ func (c conn) New(cfg config) (*conn, error) {
 		retry:    cfg.retry,
 	}
 
-	opts := mqtt.NewClientOptions()
-	opts.AddBroker(fmt.Sprintf("%s://%s", newConn.scheme, newConn.url))
-	opts.SetClientID(newConn.ID)
-	opts.SetUsername(newConn.username)
-	opts.SetPassword(newConn.token)
 
-	mqttClient := mqtt.NewClient(opts)
+	// opts := mqtt.
+	// // opts := mqtt.NewClientOptions()
+	// opts.AddBroker(fmt.Sprintf("%s://%s", newConn.scheme, newConn.url))
+	// opts.SetClientID(newConn.ID)
+	// opts.SetUsername(newConn.username)
+	// opts.SetPassword(newConn.token)
+
+	opts := mqtt.ClientConfig{
+		ClientID: newConn.ID,
+		
+	}
+	mqttClient := mqtt.NewClient()
 
 	// Try to connect with retry
 	for i := 0; i <= c.retry; i++ {
@@ -88,7 +96,7 @@ func (c conn) New(cfg config) (*conn, error) {
 		}
 	}
 
-	newConn.client = mqttClient
+	newConn.client = *mqttClient
 
 	return newConn, nil
 }
@@ -123,7 +131,7 @@ func main() {
 	if err != nil {
 		fmt.Println("Error making New subscriber connection", err.Error())
 	}
-	defer sconn.client.Disconnect(200)
+	defer sconn.client.Disconnect()
 	// Make 2 sessions sub and pub which will publish rand msg in time interval
 	sub := session{
 		conn:    sconn,

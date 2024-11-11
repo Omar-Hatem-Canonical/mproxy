@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/absmach/mproxy/examples/client/websocket"
-	mqtt "github.com/eclipse/paho.mqtt.golang"
+	mqtt "github.com/eclipse/paho.mqtt.golang/paho"
 )
 
 var (

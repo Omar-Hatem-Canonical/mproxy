@@ -6,7 +6,9 @@ package session
 import (
 	"context"
 
-	"github.com/eclipse/paho.mqtt.golang/packets"
+	// "github.com/eclipse/paho.mqtt.golang/packets"
+	"github.com/eclipse/paho.golang/packets"
+
 )
 
 // Interceptor is an interface for mProxy intercept hook.

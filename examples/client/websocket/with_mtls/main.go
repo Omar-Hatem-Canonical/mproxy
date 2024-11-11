@@ -4,7 +4,9 @@ import (
 	"fmt"
 
 	"github.com/absmach/mproxy/examples/client/websocket"
-	mqtt "github.com/eclipse/paho.mqtt.golang"
+	// mqtt "github.com/eclipse/paho.mqtt.golang"
+	mqtt "github.com/eclipse/paho.golang/paho"
+
 )
 
 var (
@@ -29,7 +31,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	defer subClient.Disconnect(250)
+	defer subClient.Disconnect()
 
 	done := make(chan struct{}, 1)
 	if token := subClient.Subscribe(topic, 0, func(c mqtt.Client, m mqtt.Message) { onMessage(c, m, done) }); token.Wait() && token.Error() != nil {
@@ -41,7 +43,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	defer pubClient.Disconnect(250)
+	defer pubClient.Disconnect()
 
 	pubClient.Publish(topic, 0, false, payload)
 	<-done
@@ -57,7 +59,7 @@ func main() {
 
 	pubClient, err = websocket.Connect(brokerAddress, tlsCfg)
 	if err == nil {
-		pubClient.Disconnect(250)
+		pubClient.Disconnect()
 		panic("some thing went wrong")
 	}
 	fmt.Printf("Failed to connect Publisher with revoked client certs,error : %s\n", err.Error())
@@ -73,7 +75,7 @@ func main() {
 
 	pubClient, err = websocket.Connect(brokerAddress, tlsCfg)
 	if err == nil {
-		pubClient.Disconnect(250)
+		pubClient.Disconnect()
 		panic("some thing went wrong")
 	}
 	fmt.Printf("Failed to connect with unknown client certs,error : %s\n", err.Error())
@@ -89,7 +91,7 @@ func main() {
 
 	pubClient, err = websocket.Connect(brokerAddress, tlsCfg1)
 	if err == nil {
-		pubClient.Disconnect(250)
+		pubClient.Disconnect()
 		panic("some thing went wrong")
 	}
 	fmt.Printf("Failed to connect without client certs,error : %s\n", err.Error())
@@ -106,7 +108,7 @@ func main() {
 
 	pubClient, err = websocket.Connect(brokerAddress, tlsCfg)
 	if err == nil {
-		pubClient.Disconnect(250)
+		pubClient.Disconnect()
 		panic("some thing went wrong")
 	}
 	fmt.Printf("Failed to connect without client certs,error : %s\n", err.Error())
