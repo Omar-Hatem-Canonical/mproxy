@@ -13,8 +13,9 @@ import (
 	// "strings"
 	"syscall"
 
-	"github.com/absmach/mproxy/examples/translator"
-	"github.com/absmach/mproxy/examples/injector"
+	// "github.com/absmach/mproxy/examples/translator"
+	// "github.com/absmach/mproxy/examples/injector"
+	"github.com/absmach/mproxy/examples/userInjector"
 
 
 	"github.com/absmach/mproxy"
@@ -52,9 +53,9 @@ func main() {
 	})
 	logger := slog.New(logHandler)
 	
-	topicTranslation := make(map[string]string)
+	// topicTranslation := make(map[string]string)
 
-	topicTranslation["test/topic"] = "test/topic2"
+	// topicTranslation["test/topic"] = "test/topic2"
 
 	handlerType := flag.Int("hand", 0, "selects the handler that inspects the packets")
 
@@ -69,15 +70,16 @@ func main() {
 
 	switch *handlerType {
 		case 0: handler = simple.New(logger)
-		case 1: handler = translator.New(logger, topicTranslation)
-		case 2: handler = injector.New(logger, "Hello")
+		case 1: handler = UserInjector.New(logger)
+		// case 2: handler = translator.New(logger, topicTranslation)
+		// case 3: handler = injector.New(logger, "Hello")
 		default: simple.New(logger)
 	}
 	
 	
 	if (*pathPtr == "") {
 		// Loading .env file to environment
-		err := godotenv.Load("/snap/mqproxy/current/.env")
+		err := godotenv.Load()
 		if err != nil {
 			panic(err)
 		}

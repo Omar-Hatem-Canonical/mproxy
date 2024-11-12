@@ -130,7 +130,7 @@ func authorize(ctx context.Context, pkt *packets.ControlPacket, h Handler) error
 	case "PUBLISH":
 		return h.AuthPublish(ctx, &pkt.Content.(*packets.Publish).Topic, &pkt.Content.(*packets.Publish).Payload, &pkt.Content.(*packets.Publish).Properties.User)
 	case "SUBSCRIBE":
-		return h.AuthSubscribe(ctx, &pkt.Content.(*packets.Subscribe).Subscriptions, &pkt.Content.(*packets.Publish).Properties.User)
+		return h.AuthSubscribe(ctx, &pkt.Content.(*packets.Subscribe).Subscriptions, &pkt.Content.(*packets.Subscribe).Properties.User)
 	default:
 		return nil
 	}
