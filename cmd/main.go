@@ -13,8 +13,8 @@ import (
 	// "strings"
 	"syscall"
 
-	// "github.com/absmach/mproxy/examples/translator"
-	// "github.com/absmach/mproxy/examples/injector"
+	"github.com/absmach/mproxy/examples/translator"
+	"github.com/absmach/mproxy/examples/injector"
 	"github.com/absmach/mproxy/examples/userInjector"
 
 
@@ -53,9 +53,11 @@ func main() {
 	})
 	logger := slog.New(logHandler)
 	
-	// topicTranslation := make(map[string]string)
+	topicTranslation := make(map[string]string)
+	revTopicTranslation := make(map[string]string)
 
-	// topicTranslation["test/topic"] = "test/topic2"
+	topicTranslation["test/topic"] = "test/foo"
+	revTopicTranslation["test/foo"] = "test/topic"
 
 	handlerType := flag.Int("hand", 0, "selects the handler that inspects the packets")
 
@@ -71,8 +73,8 @@ func main() {
 	switch *handlerType {
 		case 0: handler = simple.New(logger)
 		case 1: handler = UserInjector.New(logger)
-		// case 2: handler = translator.New(logger, topicTranslation)
-		// case 3: handler = injector.New(logger, "Hello")
+		case 2: handler = injector.New(logger, "Hello")
+		case 3: handler = translator.New(logger, topicTranslation, revTopicTranslation)
 		default: simple.New(logger)
 	}
 	
