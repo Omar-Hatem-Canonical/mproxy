@@ -84,20 +84,18 @@ func (tr *Translator) AuthSubscribe(ctx context.Context, subscriptions *[]packet
 
 // Reconvert topics on client going down
 // Topics are passed by reference, so that they can be modified
-func(tr *Translator) DownSubscribe(ctx context.Context, topics *[]string, userProperties *[]packets.User) error {
-	for i, topic := range *topics {
-		newTopic, ok := tr.revTopics[topic]
-		if ok {
-			msg := fmt.Sprintf("Topic %s translated to Topic %s. Sending...", (*topics)[i], newTopic)
-			(*topics)[i] = newTopic
+func(tr *Translator) DownSubscribe(ctx context.Context, topic *string, userProperties *[]packets.User) error {
+	newTopic, ok := tr.revTopics[*topic]
+	if ok {
+		msg := fmt.Sprintf("Topic %s translated to Topic %s. Sending...", *topic, newTopic)
+		*topic = newTopic
+		tr.logger.Info(msg)
+		} else {
+			msg := fmt.Sprintf("Topic %s could not be translated and thus kept the same. Subscribing...", *topic)
 			tr.logger.Info(msg)
-			} else {
-				msg := fmt.Sprintf("Topic %s could not be translated and thus kept the same. Subscribing...", (*topics)[i])
-				tr.logger.Info(msg)
-		}
 	}
 
-	return tr.logAction(ctx, "DownSubscribe", topics, nil, nil)
+	return tr.logAction(ctx, "DownSubscribe",  &[]string{*topic}, nil, nil)
 }
 
 // Connect - after client successfully connected

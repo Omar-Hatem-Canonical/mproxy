@@ -56,9 +56,9 @@ func (h *Handler) AuthSubscribe(ctx context.Context, subscriptions *[]packets.Su
 
 // Reconvert topics on client going down
 // Topics are passed by reference, so that they can be modified
-func(h *Handler) DownSubscribe(ctx context.Context, topics *[]string, userProperties *[]packets.User) error {
+func(h *Handler) DownSubscribe(ctx context.Context, topic *string, userProperties *[]packets.User) error {
 
-	return h.logAction(ctx, "DownSubscribe", topics, nil, userProperties)
+	return h.logAction(ctx, "DownSubscribe", &[]string{*topic}, nil, userProperties)
 }
 
 

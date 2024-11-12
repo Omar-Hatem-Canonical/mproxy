@@ -73,9 +73,9 @@ func (h *Injector) AuthSubscribe(ctx context.Context, subscriptions *[]packets.S
 
 // Reconvert topics on client going down
 // Topics are passed by reference, so that they can be modified
-func(inj *Injector) DownSubscribe(ctx context.Context, topics *[]string, userProperties *[]packets.User) error {
+func(inj *Injector) DownSubscribe(ctx context.Context, topic *string, userProperties *[]packets.User) error {
 
-	return inj.logAction(ctx, "DownSubscribe", topics, nil, userProperties)
+	return inj.logAction(ctx, "DownSubscribe",  &[]string{*topic}, nil, userProperties)
 }
 
 // Connect - after client successfully connected

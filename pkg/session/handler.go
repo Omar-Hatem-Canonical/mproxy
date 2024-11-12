@@ -22,7 +22,7 @@ type Handler interface {
 
 	// Reconvert topics on client going down
 	// Topics are passed by reference, so that they can be modified
-	DownSubscribe(ctx context.Context, topics *[]string, userProperties *[]packets.User) error
+	DownSubscribe(ctx context.Context, topic *string, userProperties *[]packets.User) error
 
 	// After client successfully connected
 	Connect(ctx context.Context) error
