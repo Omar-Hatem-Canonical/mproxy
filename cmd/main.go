@@ -20,9 +20,7 @@ import (
 
 	"github.com/absmach/mproxy"
 	"github.com/absmach/mproxy/examples/simple"
-	// "github.com/absmach/mproxy/pkg/http"
 	"github.com/absmach/mproxy/pkg/mqtt"
-	// "github.com/absmach/mproxy/pkg/mqtt/websocket"
 	"github.com/absmach/mproxy/pkg/session"
 	"github.com/caarlos0/env/v11"
 	"github.com/joho/godotenv"
@@ -34,13 +32,6 @@ const (
 	mqttWithTLS    = "MPROXY_MQTT_WITH_TLS_"
 	mqttWithmTLS   = "MPROXY_MQTT_WITH_MTLS_"
 
-	mqttWSWithoutTLS = "MPROXY_MQTT_WS_WITHOUT_TLS_"
-	mqttWSWithTLS    = "MPROXY_MQTT_WS_WITH_TLS_"
-	mqttWSWithmTLS   = "MPROXY_MQTT_WS_WITH_MTLS_"
-
-	httpWithoutTLS = "MPROXY_HTTP_WITHOUT_TLS_"
-	httpWithTLS    = "MPROXY_HTTP_WITH_TLS_"
-	httpWithmTLS   = "MPROXY_HTTP_WITH_MTLS_"
 )
 
 func main() {
@@ -94,18 +85,6 @@ func main() {
 			}
 	}
 
-	// mProxy server Configuration for MQTT without TLS
-	mqttConfig, err := mproxy.NewConfig(env.Options{Prefix: mqttWithoutTLS})
-	if err != nil {
-		panic(err)
-	}
-
-	// mProxy server for MQTT without TLS
-	mqttProxy := mqtt.New(mqttConfig, handler, interceptor, logger)
-	g.Go(func() error {
-		return mqttProxy.Listen(ctx)
-	})
-
 	// mProxy server Configuration for MQTT with TLS
 	mqttTLSConfig, err := mproxy.NewConfig(env.Options{Prefix: mqttWithTLS})
 	if err != nil {
@@ -117,99 +96,6 @@ func main() {
 	g.Go(func() error {
 		return mqttTLSProxy.Listen(ctx)
 	})
-
-	// //  mProxy server Configuration for MQTT with mTLS
-	// mqttMTLSConfig, err := mproxy.NewConfig(env.Options{Prefix: mqttWithmTLS})
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	// // mProxy server for MQTT with mTLS
-	// mqttMTlsProxy := mqtt.New(mqttMTLSConfig, handler, interceptor, logger)
-	// g.Go(func() error {
-	// 	return mqttMTlsProxy.Listen(ctx)
-	// })
-
-	// // mProxy server Configuration for MQTT over Websocket without TLS
-	// wsConfig, err := mproxy.NewConfig(env.Options{Prefix: mqttWSWithoutTLS})
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	// // mProxy server for MQTT over Websocket without TLS
-	// wsProxy := websocket.New(wsConfig, handler, interceptor, logger)
-	// g.Go(func() error {
-	// 	return wsProxy.Listen(ctx)
-	// })
-
-	// // mProxy server Configuration for MQTT over Websocket with TLS
-	// wsTLSConfig, err := mproxy.NewConfig(env.Options{Prefix: mqttWSWithTLS})
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	// // mProxy server for MQTT over Websocket with TLS
-	// wsTLSProxy := websocket.New(wsTLSConfig, handler, interceptor, logger)
-	// g.Go(func() error {
-	// 	return wsTLSProxy.Listen(ctx)
-	// })
-
-	// // mProxy server Configuration for MQTT over Websocket with mTLS
-	// wsMTLSConfig, err := mproxy.NewConfig(env.Options{Prefix: mqttWSWithmTLS})
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	// // mProxy server for MQTT over Websocket with mTLS
-	// wsMTLSProxy := websocket.New(wsMTLSConfig, handler, interceptor, logger)
-	// g.Go(func() error {
-	// 	return wsMTLSProxy.Listen(ctx)
-	// })
-
-	// // mProxy server Configuration for HTTP without TLS
-	// httpConfig, err := mproxy.NewConfig(env.Options{Prefix: httpWithoutTLS})
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	// // mProxy server for HTTP without TLS
-	// httpProxy, err := http.NewProxy(httpConfig, handler, logger)
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// g.Go(func() error {
-	// 	return httpProxy.Listen(ctx)
-	// })
-
-	// // mProxy server Configuration for HTTP with TLS
-	// httpTLSConfig, err := mproxy.NewConfig(env.Options{Prefix: httpWithTLS})
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	// // mProxy server for HTTP with TLS
-	// httpTLSProxy, err := http.NewProxy(httpTLSConfig, handler, logger)
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// g.Go(func() error {
-	// 	return httpTLSProxy.Listen(ctx)
-	// })
-
-	// // mProxy server Configuration for HTTP with mTLS
-	// httpMTLSConfig, err := mproxy.NewConfig(env.Options{Prefix: httpWithmTLS})
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	// // mProxy server for HTTP with mTLS
-	// httpMTLSProxy, err := http.NewProxy(httpMTLSConfig, handler, logger)
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// g.Go(func() error {
-	// 	return httpMTLSProxy.Listen(ctx)
-	// })
 
 	g.Go(func() error {
 		return StopSignalHandler(ctx, cancel, logger)
